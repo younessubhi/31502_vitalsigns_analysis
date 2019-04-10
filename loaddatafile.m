@@ -2,7 +2,6 @@
 cdir = fileparts(mfilename('fullpath')); 
 
 % Load the data into Matlab
-% Type 'help xlsread' to learn how to use the function for reading Excel files into Matlab.
 [NUMERIC, TXT, RAW] = xlsread(fullfile(cdir,'../31502_vitalsigns_analysis/Anno Patient Data/nn1.xlsx'));
 
 %% Heart rate
@@ -18,51 +17,39 @@ HR_gnnm = nanmean(HR_gnnm)
 indices = find(abs(HR)>300);
 HR(indices) = [HR_gnnm];
 
-figure1
+figure(1)
 plot(HR)
 
 %% Respiration rate
 
-HR = NUMERIC(1:end,2)
-HR_gnnm = HR
+RR = NUMERIC(1:end,3);
+RR_gnnm = RR;
 
-indices = find(abs(HR_gnnm)>300);
-HR_gnnm(indices) = [];
+RR_indices = find(abs(RR_gnnm)>35);
+RR_gnnm(RR_indices) = [];
 
-HR_gnnm = nanmean(HR_gnnm)
+RR_gnnm = nanmean(RR_gnnm);
 
-indices = find(abs(HR)>300);
-HR(indices) = [HR_gnnm];
+RR_indices = find(abs(RR)>35);
+RR(RR_indices) = [RR_gnnm];
 
 figure(2)
 plot(RR)
 
-% By default 'xlsread' only reads numeric cells.
-% Using the syntax [NUMERIC,TXT,RAW]=xlsread(FILE) you can get both 
-% the numeric data, text data, and raw data as a cell array.
+%% Saturation SPO2%
 
-% Extract the rows and columns corresponding to the data
-% X = NUMERIC(2:end,1:4); 
-% You can use indexing to get submatrices of the returned matrices, 
-% here we ignore the header row of the file (which is NaNs in NUMERIC),
-% which we do by starting from row number 2, and we extract the attributes 
-% that we not are stored in columns 1 to 4.
+SPO2 = NUMERIC(1:end,4);
+SPO2_gnnm = SPO2;
 
-% Extract attribute names from the first row
-% attributeNames = RAW(1,1:4)';
-% We transpose to have it fit the standard representation
-% that you saw in the exercise description (size M x 1)
+SPO2_indices = find(abs(SPO2_gnnm)<55);
+SPO2_gnnm(SPO2_indices) = [];
 
-% Extract unique class names from the last column
-% classLabels = RAW(2:end,end);
-% classNames = unique(classLabels);
+SPO2_gnnm = nanmean(SPO2_gnnm);
 
-% Extract class labels that match the class names
-% [~,y] = ismember(classLabels, classNames); y = y-1;
+SPO2_indices = find(abs(SPO2)<50);
+SPO2(SPO2_indices) = [SPO2_gnnm];
 
-% [N, M] = size(X);
-% C = length(classNames);
+figure(3)
+plot(SPO2)
 
-% Clean up the workspace
-% clearvars cdir NUMERIC RAW TXT
  
