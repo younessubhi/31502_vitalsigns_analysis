@@ -1,11 +1,16 @@
 %% load dependencies
 load count.dat
 
+%% Ask for patient id
+
+ptid = input('Enter patient id: \n')
+ptid = num2str(ptid)
+
 %% Load data
 cdir = fileparts(mfilename('fullpath')); 
 
 % Load the data into Matlab
-[NUMERIC, TXT, RAW] = xlsread(fullfile(cdir,'../31502_vitalsigns_analysis/Anno Patient Data/nn1.xlsx'));
+[NUMERIC, TXT, RAW] = xlsread(fullfile(cdir,sprintf('../31502_vitalsigns_analysis/Anno Patient Data/nn1.xlsx',ptid)));
 
 %% Heart rate
 
@@ -99,26 +104,29 @@ y1_S_BP = 120
 figure(5)
 hold on
 plot(tid, HR)
-line([tid(1) tid(end)], [y1_HR, y1_HR], 'r', 'LineWidth', 1)
-line([tid(1) tid(end)], [y2_HR, y2_HR], 'r', 'LineWidth', 1)
+line([tid(1) tid(end)], [y1_HR, y1_HR], 'LineWidth', 1)
+line([tid(1) tid(end)], [y2_HR, y2_HR], 'LineWidth', 1)
 hold off
 
 figure(6)
 hold on
 plot(tid, RR)
-line([tid(1) tid(end)], [y1_RR, y1_RR], 'r', 'LineWidth', 1)
-line([tid(1) tid(end)], [y2_RR, y2_RR], 'r', 'LineWidth', 1)
+line([tid(1) tid(end)], [y1_RR, y1_RR], 'LineWidth', 1)
+line([tid(1) tid(end)], [y2_RR, y2_RR], 'LineWidth', 1)
 hold off
 
 figure(7)
 hold on
 plot(tid, SPO2)
-line([tid(1) tid(end)], [y1_SPO2, y1_SPO2], 'r', 'LineWidth', 1)
+line([tid(1) tid(end)], [y1_SPO2, y1_SPO2], 'LineWidth', 1)
 hold off
 
 figure(8)
 hold on
 plot(tid, S_BP)
-line([tid(1) tid(end)], [y1_S_BP, y1_S_BP], 'r', 'LineWidth', 1)
-line([tid(1) tid(end)], [y2_S_BP, y2_S_BP], 'r', 'LineWidth', 1)
+line([tid(1) tid(end)], [y1_S_BP, y1_S_BP], 'LineWidth', 1)
+line([tid(1) tid(end)], [y2_S_BP, y2_S_BP], 'LineWidth', 1)
 hold off
+
+%% Statistical methods
+
