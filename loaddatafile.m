@@ -7,10 +7,10 @@ ptid = input('Enter patient id: \n')
 ptid = num2str(ptid)
 
 %% Load data
-% data = fileparts(mfilename('fullpath')); 
+cdir = fileparts(mfilename('fullpath')); 
 
 % Load the data into Matlab
-% [NUMERIC, TXT, RAW] = xlsread(fullfile(data,sprintf('../31502_vitalsigns_analysis/Anno Patient Data/nn1.xlsx',ptid)));
+[NUMERIC, TXT, RAW] = xlsread(fullfile(cdir,'../31502_vitalsigns_analysis/Anno Patient Data/nn1.xlsx'));
 
 data = readtable(sprintf('../31502_vitalsigns_analysis/Anno Patient Data/nn%s.xlsx', ptid));
 %% construct struct
@@ -28,6 +28,19 @@ HR_gnnm = nanmean(HR_gnnm)
 
 indices = find(abs(HR)>300);
 HR(indices) = [HR_gnnm];
+
+HR1_thresholdabove = find(abs(HR) > 120)
+HRthreshold = [];
+
+for ii = 1:length(HRthreshold)
+    
+    HR_above(end+1) = HR(HR_thresholdabove(ii))
+    
+end
+
+
+
+HR2_thresholdbelow = find(abs(HR) < 60)
 
 figure(1)
 plot(HR)
@@ -133,4 +146,10 @@ line([tid(1) tid(end)], [y2_S_BP, y2_S_BP], 'LineWidth', 1)
 hold off
 
 %% Statistical methods
+
+bxp = input('What would you like to boxplot? (HR/RR/SPO2/SBP): \n')
+
+boxplot(bxp)
+
+histogram = input('What would you like to histogram? (HR/RR/SPO2/SBP): \n')
 
