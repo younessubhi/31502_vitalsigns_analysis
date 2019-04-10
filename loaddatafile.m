@@ -1,11 +1,42 @@
-%% exercise 1.5.2
+%% Load data
 cdir = fileparts(mfilename('fullpath')); 
 
 % Load the data into Matlab
 % Type 'help xlsread' to learn how to use the function for reading Excel files into Matlab.
 [NUMERIC, TXT, RAW] = xlsread(fullfile(cdir,'../31502_vitalsigns_analysis/Anno Patient Data/nn1.xlsx'));
 
+%% Heart rate
+
 HR = NUMERIC(1:end,2)
+HR_gnnm = HR
+
+indices = find(abs(HR_gnnm)>300);
+HR_gnnm(indices) = [];
+
+HR_gnnm = nanmean(HR_gnnm)
+
+indices = find(abs(HR)>300);
+HR(indices) = [HR_gnnm];
+
+figure1
+plot(HR)
+
+%% Respiration rate
+
+HR = NUMERIC(1:end,2)
+HR_gnnm = HR
+
+indices = find(abs(HR_gnnm)>300);
+HR_gnnm(indices) = [];
+
+HR_gnnm = nanmean(HR_gnnm)
+
+indices = find(abs(HR)>300);
+HR(indices) = [HR_gnnm];
+
+figure(2)
+plot(RR)
+
 % By default 'xlsread' only reads numeric cells.
 % Using the syntax [NUMERIC,TXT,RAW]=xlsread(FILE) you can get both 
 % the numeric data, text data, and raw data as a cell array.
