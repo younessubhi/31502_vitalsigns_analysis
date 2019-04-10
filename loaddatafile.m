@@ -18,33 +18,36 @@ data = readtable(sprintf('../31502_vitalsigns_analysis/Anno Patient Data/nn%s.xl
 patient = struct('Code', {data(:,2).Properties.VariableNames,data(:,3).Properties.VariableNames,data(:,4).Properties.VariableNames,data(:,6).Properties.VariableNames}, 'Time', data(:,1), 'Value', {data(:,2),data(:,3),data(:,4),data(:,6)});
 %% Heart rate
 
-HR = NUMERIC(1:end,2)
-HR_gnnm = HR
+[HR,RR,spo2,syspress] = patient.Value;
+HR = table2array(HR);
+
+HR_gnnm = HR;
 
 indices = find(abs(HR_gnnm)>300);
 HR_gnnm(indices) = [];
 
-HR_gnnm = nanmean(HR_gnnm)
+HR_gnnm = nanmean(HR_gnnm);
 
 indices = find(abs(HR)>300);
 HR(indices) = [HR_gnnm];
 
-HR1_thresholdabove = find(abs(HR) > 120)
-HRthreshold = [];
+HR_thresholdabove = find(abs(HR) > 120);
+HR_above = [];
 
-for ii = 1:length(HRthreshold)
-    
-    HR_above(end+1) = HR(HR_thresholdabove(ii))
-    
+for ii = 1:length(HR_thresholdabove);
+        HR_above(end+1) = HR(HR_thresholdabove(ii));
 end
 
+time_HR_above = [];
 
-
-HR2_thresholdbelow = find(abs(HR) < 60)
+for ii = 1:length(HR_thresholdabove);
+    time_HR_above(end+1) = tid(HR_thresholdabove(ii));
+end
 
 figure(1)
+hold on
 plot(HR)
-
+plot()
 %% Respiration rate
 
 RR = NUMERIC(1:end,3);
