@@ -1,9 +1,9 @@
 %% exercise 1.5.2
-cdir = fileparts(mfilename('fullpath')); 
+cdir = fileparts(mfilename('nn1.xlsx')); 
 
 % Load the data into Matlab
 % Type 'help xlsread' to learn how to use the function for reading Excel files into Matlab.
-[NUMERIC, TXT, RAW] = xlsread(fullfile(cdir,'../Data/iris.xls'));
+[NUMERIC, TXT, RAW] = xlsread(fullfile(cdir,'../GitHub/31502_vitalsigns_analysis/Anno Patient Data/nn1.xlsx'));
 
 % By default 'xlsread' only reads numeric cells.
 % Using the syntax [NUMERIC,TXT,RAW]=xlsread(FILE) you can get both 
