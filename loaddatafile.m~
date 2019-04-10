@@ -7,10 +7,10 @@ ptid = input('Enter patient id: \n')
 ptid = num2str(ptid)
 
 %% Load data
-% data = fileparts(mfilename('fullpath')); 
+cdir = fileparts(mfilename('fullpath')); 
 
 % Load the data into Matlab
-% [NUMERIC, TXT, RAW] = xlsread(fullfile(data,sprintf('../31502_vitalsigns_analysis/Anno Patient Data/nn1.xlsx',ptid)));
+[NUMERIC, TXT, RAW] = xlsread(fullfile(cdir,'../31502_vitalsigns_analysis/Anno Patient Data/nn1.xlsx'));
 
 data = readtable(sprintf('../31502_vitalsigns_analysis/Anno Patient Data/nn%s.xlsx', ptid));
 %% construct struct
@@ -29,11 +29,22 @@ HR_gnnm = nanmean(HR_gnnm)
 indices = find(abs(HR)>300);
 HR(indices) = [HR_gnnm];
 
-HR1_thresholdabove = find(abs(HR) > 120)
-HR2_thresholdbelow = find(abs(HR) < 60)
+HR_thresholdabove = find(abs(HR) > 120)
+HRthreshold = [];
 
-HR_threshold(HR1_thresholdabove) = [];
-HR_threshold(HR2_thresholdbelow) = [];
+for ii = 1:length(HR_thresholdabove):
+    
+    HRthreshold(end+1) = HR(HR_thresholdabove(ii)):
+    
+end
+
+time_HR_threshold = [];
+
+for ii = 1:length(HR_threshold)
+    
+    time_HR_
+
+HR2_thresholdbelow = find(abs(HR) < 60)
 
 figure(1)
 plot(HR)
