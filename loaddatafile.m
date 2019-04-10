@@ -1,3 +1,6 @@
+%% load dependencies
+load count.dat
+
 %% Load data
 cdir = fileparts(mfilename('fullpath')); 
 
@@ -71,19 +74,51 @@ for i = 2:length(S_BP);
     end
 end
 
-
-% S_BP_indices = find(abs(S_BP)<50);
-% S_BP_gnnm(S_BP_indices) = [];
-%
-% S_BP_gnnm = nanmean(S_BP);
-
-% S_BP_indices = find(abs(S_BP)<50);
-% S_BP(S_BP_indices) = [S_BP_gnnm];
-% S_BP(isnan(S_BP)) = S_BP_gnnm
-
 figure(4)
 plot(S_BP)
 
 %% Create time (WAAAAAAAUUUUUW)
 
-[Sig, TStr, Raw] = xlsread(cdir, '../Anno Patient Data/nn1.xlsx',1,'A2:A5760');
+c1 = readtable('anno patient data/nn1.xlsx');
+
+tid = c1{1:end,1};
+
+%% norm intervaller
+
+y1_HR = 60
+y2_HR = 120
+
+y1_RR = 12
+y2_RR = 20
+
+y1_SPO2 = 93
+
+y1_S_BP = 80
+y1_S_BP = 120
+
+figure(5)
+hold on
+plot(tid, HR)
+line([tid(1) tid(end)], [y1_HR, y1_HR], 'r', 'LineWidth', 1)
+line([tid(1) tid(end)], [y2_HR, y2_HR], 'r', 'LineWidth', 1)
+hold off
+
+figure(6)
+hold on
+plot(tid, RR)
+line([tid(1) tid(end)], [y1_RR, y1_RR], 'r', 'LineWidth', 1)
+line([tid(1) tid(end)], [y2_RR, y2_RR], 'r', 'LineWidth', 1)
+hold off
+
+figure(7)
+hold on
+plot(tid, SPO2)
+line([tid(1) tid(end)], [y1_SPO2, y1_SPO2], 'r', 'LineWidth', 1)
+hold off
+
+figure(8)
+hold on
+plot(tid, S_BP)
+line([tid(1) tid(end)], [y1_S_BP, y1_S_BP], 'r', 'LineWidth', 1)
+line([tid(1) tid(end)], [y2_S_BP, y2_S_BP], 'r', 'LineWidth', 1)
+hold off

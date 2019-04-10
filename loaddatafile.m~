@@ -1,3 +1,6 @@
+%% load dependencies
+load count.dat
+
 %% Load data
 cdir = fileparts(mfilename('fullpath')); 
 
@@ -62,24 +65,46 @@ S_BP_gnnm(S_BP_indices) = [];
 
 S_BP_gnnm = nanmean(S_BP);
 
-S_BP(1) = S_BP_gnnm
+S_BP(1) = S_BP_gnnm;
 
-for i = 2:length(S_BP)
-    if S_BP(isnan(S_BP(i))) = i - 1
-    else
-        i = i + 1
+for i = 2:length(S_BP);
+    c = isnan(S_BP(i));
+    if c == true;
+        S_BP(i) = S_BP(i-1);
     end
 end
 
-
-% S_BP_indices = find(abs(S_BP)<50);
-% S_BP_gnnm(S_BP_indices) = [];
-%
-% S_BP_gnnm = nanmean(S_BP);
-
-% S_BP_indices = find(abs(S_BP)<50);
-% S_BP(S_BP_indices) = [S_BP_gnnm];
-% S_BP(isnan(S_BP)) = S_BP_gnnm
-
 figure(4)
 plot(S_BP)
+
+%% Create time (WAAAAAAAUUUUUW)
+
+c1 = readtable('anno patient data/nn1.xlsx');
+
+tid = c1{1:end,1};
+
+%% norm intervaller
+
+y1_HR = [60]
+y2_HR = [120]
+
+y1_RR = [12]
+y2_RR = [20]
+
+y1_SPO2 = [93]
+
+y1_S_BP = [80]
+y1_S_BP = [120]
+
+figure(5)
+hold on
+plot(tid, HR)
+plot(y1_HR)
+line([:],[y1_HR,])
+hold off
+figure(6)
+plot(tid, RR, x1_RR, x2_RR)
+figure(7)
+plot(tid, SPO2, x1_SPO2)
+figure(8)
+plot(tid, S_BP, x1_S_BP, x2_S_BP)
