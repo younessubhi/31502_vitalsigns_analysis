@@ -7,11 +7,15 @@ ptid = input('Enter patient id: \n')
 ptid = num2str(ptid)
 
 %% Load data
-cdir = fileparts(mfilename('fullpath')); 
+% data = fileparts(mfilename('fullpath')); 
 
 % Load the data into Matlab
-[NUMERIC, TXT, RAW] = xlsread(fullfile(cdir,sprintf('../31502_vitalsigns_analysis/Anno Patient Data/nn1.xlsx',ptid)));
+% [NUMERIC, TXT, RAW] = xlsread(fullfile(data,sprintf('../31502_vitalsigns_analysis/Anno Patient Data/nn1.xlsx',ptid)));
 
+data = readtable(sprintf('../31502_vitalsigns_analysis/Anno Patient Data/nn%s.xlsx', ptid));
+%% construct struct
+
+patient = struct('Code', {data(:,2).Properties.VariableNames,data(:,3).Properties.VariableNames,data(:,4).Properties.VariableNames,data(:,6).Properties.VariableNames}, 'Time', data(:,1), 'Value', {data(:,2),data(:,3),data(:,4),data(:,6)});
 %% Heart rate
 
 HR = NUMERIC(1:end,2)
