@@ -52,4 +52,38 @@ SPO2(SPO2_indices) = [SPO2_gnnm];
 figure(3)
 plot(SPO2)
 
- 
+%% Systolic BP
+
+S_BP = NUMERIC(1:end,6)
+S_BP_gnnm = S_BP;
+
+S_BP_indices = find(abs(S_BP)<50);
+S_BP_gnnm(S_BP_indices) = [];
+
+S_BP_gnnm = nanmean(S_BP);
+
+S_BP(1) = S_BP_gnnm;
+
+for i = 2:length(S_BP);
+    c = isnan(S_BP(i));
+    if c == true;
+        S_BP(i) = S_BP(i-1);
+    end
+end
+
+
+% S_BP_indices = find(abs(S_BP)<50);
+% S_BP_gnnm(S_BP_indices) = [];
+%
+% S_BP_gnnm = nanmean(S_BP);
+
+% S_BP_indices = find(abs(S_BP)<50);
+% S_BP(S_BP_indices) = [S_BP_gnnm];
+% S_BP(isnan(S_BP)) = S_BP_gnnm
+
+figure(4)
+plot(S_BP)
+
+%% Create time (WAAAAAAAUUUUUW)
+
+[Sig, TStr, Raw] = xlsread(cdir, '../Anno Patient Data/nn1.xlsx',1,'A2:A5760');
