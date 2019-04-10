@@ -85,40 +85,26 @@ tid = c1{1:end,1};
 
 %% norm intervaller
 
-y1_HR = 60
-y2_HR = 120
+y1_HR = [60]
+y2_HR = [120]
 
-y1_RR = 12
-y2_RR = 20
+y1_RR = [12]
+y2_RR = [20]
 
-y1_SPO2 = 93
+y1_SPO2 = [93]
 
-y1_S_BP = 80
-y1_S_BP = 120
+y1_S_BP = [80]
+y1_S_BP = [120]
 
 figure(5)
 hold on
 plot(tid, HR)
-line([tid(1) tid(end)], [y1_HR, y1_HR], 'r', 'LineWidth', 1)
-line([tid(1) tid(end)], [y2_HR, y2_HR], 'r', 'LineWidth', 1)
+plot(y1_HR)
+line([:],[y1_HR,])
 hold off
-
 figure(6)
-hold on
-plot(tid, RR)
-line([tid(1) tid(end)], [y1_RR, y1_RR], 'r', 'LineWidth', 1)
-line([tid(1) tid(end)], [y2_RR, y2_RR], 'r', 'LineWidth', 1)
-hold off
-
+plot(tid, RR, x1_RR, x2_RR)
 figure(7)
-hold on
-plot(tid, SPO2)
-line([tid(1) tid(end)], [y1_SPO2, y1_SPO2], 'r', 'LineWidth', 1)
-hold off
-
+plot(tid, SPO2, x1_SPO2)
 figure(8)
-hold on
-plot(tid, S_BP)
-line([tid(1) tid(end)], [y1_S_BP, y1_S_BP], 'r', 'LineWidth', 1)
-line([tid(1) tid(end)], [y2_S_BP, y2_S_BP], 'r', 'LineWidth', 1)
-hold off
+plot(tid, S_BP, x1_S_BP, x2_S_BP)
