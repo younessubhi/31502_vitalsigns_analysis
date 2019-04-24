@@ -57,11 +57,12 @@ HR_gnnm = nanmean(HR_gnnm);
 HR(indices) = [HR_gnnm];
 
 % HR er nu klar til plot, men vi kan også finde de punkter som er over
-% eller under normalen
+% eller under normalen.
 
 %% Finder alle HR over normen
 HR_indices_above = find(abs(HR) > 120);
 HR_above = [];
+HR_above_exist = 0
 
 if size(HR_indices_above > 1)
 
@@ -123,7 +124,7 @@ end
 title('Heart Rate')
 xlabel('Timeline')
 ylabel('Heart rate [BPM]')
-ylim([50 160])
+ylim([min(HR)-5 max(HR)+10])
 
 hold off
 %% 
@@ -202,7 +203,7 @@ end
 title('Respiration Rate')
 xlabel('Timeline')
 ylabel('Respiration Rate [breaths/min]')
-ylim([9 35])
+ylim([min(RR)-2 35])
 
 hold off
 
@@ -252,7 +253,7 @@ end
 title('Oxygen Saturation Rate')
 xlabel('Timeline')
 ylabel('Saturation [%]')
-ylim([65 100])
+ylim([min(SPO2)-5 100])
 
 hold off  
 
@@ -335,7 +336,7 @@ end
 title('Systolic Blood Pressure')
 xlabel('Timeline')
 ylabel('Blood pressure [mm Hg]')
-ylim([75 155])
+ylim([min(S_BP)-5 max(S_BP)+5])
 
 hold off
 

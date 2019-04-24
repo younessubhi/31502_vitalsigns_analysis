@@ -57,11 +57,12 @@ HR_gnnm = nanmean(HR_gnnm);
 HR(indices) = [HR_gnnm];
 
 % HR er nu klar til plot, men vi kan også finde de punkter som er over
-% eller under normalen
+% eller under normalen.
 
 %% Finder alle HR over normen
 HR_indices_above = find(abs(HR) > 120);
 HR_above = [];
+HR_above_exist = 0
 
 if size(HR_indices_above > 1)
 
@@ -202,7 +203,7 @@ end
 title('Respiration Rate')
 xlabel('Timeline')
 ylabel('Respiration Rate [breaths/min]')
-ylim([9 35])
+ylim([min(RR)-2 35])
 
 hold off
 
@@ -252,7 +253,7 @@ end
 title('Oxygen Saturation Rate')
 xlabel('Timeline')
 ylabel('Saturation [%]')
-ylim([65 100])
+ylim([min() 100])
 
 hold off  
 
@@ -335,28 +336,25 @@ end
 title('Systolic Blood Pressure')
 xlabel('Timeline')
 ylabel('Blood pressure [mm Hg]')
-ylim([75 155])
+ylim([75 max(S_BP)+10])
 
 hold off
 
 %% Statistical methods
 
-% Laver to variabler til boxplot og histogram
-%bxp = input('What would you like to boxplot and histogram? (HR/RR/SPO2/S_BP): \n');
-%hst = bxp
-
-normHR = normalize(HR)
-normRR = normalise(RR)
-normSPO2 = normalise(SPO2)
-normS_BP = normalise(S_BP)
+% Normalisere vores værdier for de enkelte vital signs
+normHR = normalize(HR);
+normRR = normalize(RR);
+normSPO2 = normalize(SPO2);
+normS_BP = normalize(S_BP);
 
 % bruger boxplot funktionen til at lave et boxplot
 figure(5);
 hold on
-boxplot([normHR,normRR]);
-
-
+boxplot([normHR,normRR,normSPO2,normS_BP],'Labels',{'HR','RR','SPO2','S_BP'});
+title('Normalized boxplots for each vital sign')
+ylabel('Normalized values')
 
 % bruger histogram funktionen til at lave et histogram
 figure(6);
-histogram(hst);
+histogram(HR);
