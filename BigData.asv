@@ -341,19 +341,22 @@ hold off
 
 %% Statistical methods
 
-% Normalisere vores værdier for de enkelte vital signs
-normHR = normalize(HR);
-normRR = normalize(RR);
-normSPO2 = normalize(SPO2);
-normS_BP = normalize(S_BP);
+% Laver to variabler til boxplot og histogram
+%bxp = input('What would you like to boxplot and histogram? (HR/RR/SPO2/S_BP): \n');
+%hst = bxp
+
+normHR = normalize(HR)
+normRR = normalise(RR)
+normSPO2 = normalise(SPO2)
+normS_BP = normalise(S_BP)
 
 % bruger boxplot funktionen til at lave et boxplot
 figure(5);
 hold on
-boxplot([normHR,normRR,normSPO2,normS_BP],'Labels',{'HR','RR','SPO2','S_BP'});
-title('Normalized boxplots for each vital sign')
-ylabel('Normalized values')
+boxplot([normHR,normRR]);
+
+
 
 % bruger histogram funktionen til at lave et histogram
 figure(6);
-histogram(HR);
+histogram(hst);
