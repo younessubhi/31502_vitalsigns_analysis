@@ -203,7 +203,7 @@ end
 title('Respiration Rate')
 xlabel('Timeline')
 ylabel('Respiration Rate [breaths/min]')
-ylim([min(RR)-2 35])
+ylim([min(RR)-2 max(RR)+5])
 
 hold off
 
