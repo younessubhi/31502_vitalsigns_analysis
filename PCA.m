@@ -1,0 +1,240 @@
+%% PCA
+% author: yssubhi
+
+% kør skriptet sektion for sektion, jeg har prøve at skrive rigeligt med
+% kommentarer, også eksamensrelevant information
+% kommentarer om koden er givet ved '%'
+% kommentarer om PCA/machine learning er givet ved '% ###'
+
+close all, clear all, clc
+%% import data
+
+% load xls data til matlab
+% jeg har sat den til fullpath, så husk at ændrer den til at matche
+% file dir på eget drive
+
+cdir = fileparts(mfilename('fullpath')); 
+[NUMERIC_1, TXT_1, RAW_1] = xlsread(fullfile(cdir,'Anno Patient Data/nn1.xlsx'));
+[NUMERIC_2, TXT_2, RAW_2] = xlsread(fullfile(cdir,'Anno Patient Data/nn2.xlsx'));
+[NUMERIC_3, TXT_3, RAW_3] = xlsread(fullfile(cdir,'Anno Patient Data/nn3.xlsx'));
+
+%% preprocessering af data
+% Vi bruger NUMERIC til data behandling, RAW og TEXT er gode til at holde
+% overblik
+
+% ### PCA'en skal vise om der er sammenhæng mellem de forskellige vital
+% ### signs. Derfor er den temporale dimension underordnet.
+% ### Her skal du beslutte om du vil undersøge på tværs af
+% ### patientpopulationen eller om du vil holde dig til den enkelte patient
+% ### I et større epidimiologisk studie eller hvor man har et højt antal
+% ### subjects, ville det være interessant at undersøge på tværs af
+% ### patienter, da værdi forskelle grundet individuelle og kliniske
+% ### forskelle ville have mindre betydning.
+% ### Da vi kun har tre patienter, og vi ikke ved om de fejler det samme
+% ### eller forskelligt patologi, vil det være smartest at undersøge per
+% ### patient.
+% ### Selv ville jeg til eksamen undersøge påtværs af alle
+% ### patienter, da datamægnden er lille per patient (kun 4 døgn / 6000
+% ### datapunkter), også på forhånd gøre opmærksom på fejlkilden.
+% ### Jeg laver derfor PCA'en over alle patienter,  men ønsker du kun over
+% ### en enkelt patient, skal du kommentere den 'append'-sektionen ud
+
+%% Append
+% Concatenation af data
+
+X = [NUMERIC_1; NUMERIC_2; NUMERIC_3];
+
+% RAW_1 har 2 NAN rækker. De skal fjernes..
+RAW_1(:,9:10) = [];
+
+% Concatenation forsat
+X_RAW = [RAW_1; RAW_2; RAW_3];
+X_TXT = [TXT_1; TXT_2; TXT_3];
+
+%% preproccesering forsat
+% ### En PCA er bedst når den kun har det absolut, mest nødvendige data
+% Lad os undersøge hvilket data vi har fået fra .xls filerne:
+
+X_TXT
+
+% Vi har: Timestamp, HR, RR, Saturation, Puls, sBP, dBP, Puls fra
+% BP-apparatur (pBP)
+% ### Som nævnt tidligere, er den temporale dimension i denne PCA underordnet.
+% Derfor fjerner vi første kolonne:
+X(:,1) = [];
+
+
+% ### For at få en god PCA er det vigtigt at der er lige mange data
+% punkter.
+% Derfor kan der nu laves to forskellige PCA'er. Enten en hvor vi fjerner
+% alle kolonner som ikke er kontinuerlige målinger (sBP, dBP, pBP) eller vi
+% fjerner alle rækker med NaN data.
+% Sidstnævnte er mest interessant, da den undersøge med flest features, men
+% kan være en svag analyse, hvis der ikke er nok datapunkter. Vi burde
+% kunne arbejde med ca. +70 data punkter.
+
+% Vi fjerner alle rækker med NaN, i en ny variable, for at undersøge
+% datamængden
+
+Y = X;
+Y(any(isnan(Y), 2), :) = [];
+
+size(Y)
+
+% ### 567x7; ser godt ud. Ca. 600 bør kunne klare data processeringen
+
+%% Data processering
+
+% ligesom tidligere, skal vi have fjernet alle fejlmålinger / artefakter
+
+% Kolonner: 1: HR, 2: RR, 3: SAT, 4: Puls, 5: sBP, 6: dBP, 7: pBP
+% Værdier der fjernes:
+% HR: >300
+HR = Y(:,1);
+indices = find(abs(Y(:,1))>300);
+HR(indices) = NaN;
+% RR: >35
+RR = Y(:,2);
+indices = find(abs(Y(:,2))>35);
+RR(indices) = NaN;
+% SAT: <55
+SAT = Y(:,3);
+indices = find(abs(Y(:,3))<55);
+SAT(indices) = NaN;
+% Puls: >300
+Puls = Y(:,4);
+indices = find(abs(Y(:,4))>300);
+Puls(indices) = NaN;
+% sBP: <50
+sBP = Y(:,5);
+indices = find(abs(Y(:,5))<50);
+sBP(indices) = NaN;
+% dBP: <20
+dBP = Y(:,6);
+indices = find(abs(Y(:,6))<20);
+dBP(indices) = NaN;
+% pBP: >300
+pBP = Y(:,7);
+indices = find(abs(Y(:,7))>300);
+pBP(indices) = NaN;
+
+
+% fjern alle nye NaNs
+Z = [HR, RR, SAT, Puls, sBP, dBP, pBP];
+
+size(Z)
+
+Z(any(isnan(Z), 2), :) = [];
+
+size(Z)
+
+% ### 447x6. Det bør give pæne plots
+
+%% Labels
+
+% Vi henter attribute/feature names fra fil
+attributeNames = X_RAW(1, 2:end);
+
+% ### Vi skal have en class label / feature vector: værdierne, som PCA'en
+% skal predictere
+% Det kan være interessant at forudsige blodtryksværdierne, da de netop er
+% dem vi ikke har kontinuerlige målinger på. Dvs. med tilstrækkelig godt
+% data, ville man kunne forudsige blodtrykket, baseret på de kontinuerlige
+% data mål, og derved også have en kontinuerlig (gæt) dataværdi for
+% patientes blodtryk, uden faktisk at foretage målinger.
+% Vi vil predictere sBP (da den er mest relevant klinisk) ::: nu bruger vi også dBP og pBP i predictionen,
+% det vil ikke være en god ide ifht ovenstående eksempel med predictioner;
+% men vi har allerede kun seks features, og denne PCA er kun for at vise
+% 'at vi kan'
+
+% udvælg classLabels og classValues
+
+classLabels = Z(1:end,5);
+classValues = unique(classLabels);
+
+% vi fjerner vores classVector fra data matricen
+
+Z(:,5) = [];
+size(Z)
+ 
+className = attributeNames(:,5);
+attributeNames(:,5) = [];
+
+% resterende kolonner er:
+attributeNames
+
+% HR, RR, Sat, Puls, dBP, pBP
+
+%% initiel data visualisering
+
+% attribute til kolonne tal
+clear HR RR SAT Puls dBP pBP
+
+HR = 1
+RR = 2
+SAT = 3
+Puls = 4
+dBP = 5
+pBP = 6
+
+% ### den tilbagestående data sidder nu i et 6 dimensionelt rum, hvor hver
+% dimension svare til en feature. Det gør visualisering af rå data svært,
+% da vi ikke kan plotte data i mere end 2-3 dimensioner (uden vi mister
+% overblik)
+
+% vi starter med at plotte de første to kolonner
+% scatter plots <3
+figure(1)
+title('data')
+plot(Z(:,HR), Z(:,RR),'o')
+axis tight
+
+% fancy plot
+figure(2)
+title('Classes')
+plot(Z(:,HR), Z(:,RR),'o')
+C = length(attributeNames);
+colors = get(gca, 'colororder');
+%for c = 0:C-1
+%    h = scatter(X(y==c,i), X(y==c,j), 50, 'o', ...
+%                'MarkerFaceColor', colors(c+1,:), ...
+%                'MarkerEdgeAlpha', 0, ...
+%                'MarkerFaceAlpha', .5);
+%end
+legend(attributeNames);
+axis tight
+%xlabel(attributeNames{i});
+%ylabel(attributeNames{j});
+
+%% PCA computation
+% substraher mean fra data
+stm = bsxfun(@minus, Z, mean(Z));
+
+% Find PCA løsningen ved at udregne singular value decomposition (SVD) af
+% stm. SVD <3 (man bruger SVD konstant i EEG data behandling)
+% i command window: doc svd
+
+[U, S, V] = svd(stm);
+
+% Computér 'variance explained'
+% google: var explained
+rho = diag(S).^2./sum(diag(S).^2);
+threshold = 0.90;
+
+% Plot 'variance explained'
+figure(3)
+hold on
+plot(rho, 'x-')
+plot(cumsum(rho), 'o-')
+plot([0, length(rho)], [threshold, threshold], 'k--');
+legend({'Individual', 'Cumulative', 'Threshold'}, ...
+        'Location', 'best');
+ylim([0, 1]);
+xlim([1, length(rho)]);
+grid minor
+xlabel('Principal component');
+ylabel('Variance explained value');
+title('Variance explained by principal components');
+hold off
+
+
