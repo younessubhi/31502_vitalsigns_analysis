@@ -207,6 +207,12 @@ axis tight
 %ylabel(attributeNames{j});
 
 %% PCA computation
+% nu laver vi PCA'en (variance explained), som fortæller hvor meget hver
+% attribute bidrager med i forudsigelsen af vores class feature (sBP).
+% samtidig ser det cummulative bidrag, som fortæller hvor gode vi
+% gennemsnitligt kan være til at forudsige sBP baseret på antal
+% componenter.
+
 % substraher mean fra data
 stm = bsxfun(@minus, Z, mean(Z));
 
@@ -236,5 +242,6 @@ xlabel('Principal component');
 ylabel('Variance explained value');
 title('Variance explained by principal components');
 hold off
+
 
 
